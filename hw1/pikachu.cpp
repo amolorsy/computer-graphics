@@ -29,6 +29,7 @@ float rot[3] = { 0.0f, 0.0f, 0.0f };
 float bodyRot = 0.0f;
 float headRot = 0.0f;
 float tailRot = 0.0f;
+float armRot = 0.0f;
 
 int width, height;
 
@@ -99,6 +100,7 @@ void display() {
 
   GLUquadricObj* arm = gluNewQuadric();
   glPushMatrix();
+    glRotatef(armRot, 0, 0, 1);
     glTranslatef(-4.0f, 3.0f, 10.0f);
     glRotatef(10.0f, 0, 1, 0);
     glRotatef(-60.0f, 1, 0, 0);
@@ -106,6 +108,7 @@ void display() {
   glPopMatrix();
 
   glPushMatrix();
+    glRotatef(-armRot, 0, 0, 1);
     glTranslatef(4.0f, 3.0f, 10.0f);
     glRotatef(-10.0f, 0, 1, 0);
     glRotatef(-60.0f, 1, 0, 0);
@@ -320,10 +323,12 @@ void keyPress(unsigned char key, int x, int y) {
     case 'w':
       if (headRot >= -15.0f) headRot -= 1.0;
       if (tailRot <= 15.0f) tailRot += 1.0;
+      if (armRot <= 15.0f) armRot += 1.0;
       break;
     case 's':
       if (headRot <= 0.0f) headRot += 1.0;
       if (tailRot >= 0.0f) tailRot -= 1.0;
+      if (armRot >= 0.0f) armRot -= 1.0;
       break;
     case 'a':
       bodyRot -= 1.0;
