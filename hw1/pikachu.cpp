@@ -21,7 +21,7 @@ const GLfloat MATERIAL_AMBIENT[] = { 0.0f, 0.75f, 0.0f, 1.0f };
 const GLfloat MATERIAL_SPECULAR[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 /* Vectors that makes the rotation and translation of the cube */
-float eye[3] = { 0.0f, 0.0f, 100.0f };
+float eye[3] = { 20.0f, 0.0f, 100.0f };
 float ref[3] = { 0.0f, 0.0f, 0.0f };
 float rot[3] = { 0.0f, 0.0f, 0.0f };
 /* End */
@@ -30,6 +30,15 @@ float bodyRot = 0.0f;
 float headRot = 0.0f;
 float tailRot = 0.0f;
 float armRot = 0.0f;
+float leftLegRot = 0.0f;
+float rightLegRot = 0.0f;
+float earRot = 0.0f;
+float baseRot = 0.0f; // For debug
+
+float loc = 0.0f;
+
+float isLeftRaising = true, isRightRaising = true;
+float isArmRaising = true, isTailRaising = true, isEarRaising = true;
 
 int width, height;
 
@@ -90,7 +99,9 @@ void display() {
   glMaterialfv(GL_FRONT, GL_SPECULAR, MATERIAL_SPECULAR);
   glMateriali(GL_FRONT, GL_SHININESS, 48);
 
-  glRotatef(bodyRot, 0, 1, 0);
+  glTranslatef(0, 0, loc);
+  glRotatef(baseRot, 0, 1, 0);
+  glRotatef(bodyRot, 0, 0, 1);
 
   glColor3f(1.0, 1.0, 0); // Yellow color
   glRotatef(90.0f, 1, 0, 0);
@@ -118,12 +129,14 @@ void display() {
   
   GLUquadricObj* leg = gluNewQuadric();
   glPushMatrix();
+    glRotatef(leftLegRot, 1, 0, 0);
     glRotatef(-15.0f, 0, 1, 0);
     glTranslatef(0.5f, 3.0f, 15.0f);
     gluCylinder(leg, 0.5, 1.75, 5, 100, 10);
   glPopMatrix();
 
   glPushMatrix();
+    glRotatef(rightLegRot, 1, 0, 0);
     glRotatef(15.0f, 0, 1, 0);
     glTranslatef(-0.5f, 3.0f, 15.0f);
     gluCylinder(leg, 0.5, 1.75, 5, 100, 10);
@@ -269,6 +282,7 @@ void display() {
 
     GLUquadricObj* ear = gluNewQuadric();
     glPushMatrix();
+      glRotatef(earRot, 0, 0, 1);
       glRotatef(-90.0f, 1, 0, 0);
       glRotatef(-9.0f, 0, 1, 0);
       glTranslatef(-4.0, 0, 5);
@@ -283,6 +297,7 @@ void display() {
     glPopMatrix();
 
     glPushMatrix();
+      glRotatef(earRot, 0, 0, 1);
       glRotatef(-90.0f, 1, 0, 0);
       glRotatef(9.0f, 0, 1, 0);
       glTranslatef(4.0, 0, 5);
@@ -321,20 +336,51 @@ void keyPress(unsigned char key, int x, int y) {
       exit(0);
       break;
     case 'w':
-      if (headRot >= -15.0f) headRot -= 1.0;
-      if (tailRot <= 15.0f) tailRot += 1.0;
-      if (armRot <= 15.0f) armRot += 1.0;
+      if (headRot > -15.0f) headRot -= 1.0;
+      if (tailRot < 15.0f) tailRot += 1.0;
+      if (armRot < 15.0f) armRot += 1.0;
       break;
     case 's':
-      if (headRot <= 0.0f) headRot += 1.0;
-      if (tailRot >= 0.0f) tailRot -= 1.0;
-      if (armRot >= 0.0f) armRot -= 1.0;
+      if (headRot < 0.0f) headRot += 1.0;
+      if (tailRot > 0.0f) tailRot -= 1.0;
+      if (armRot > 0.0f) armRot -= 1.0;
       break;
     case 'a':
-      bodyRot -= 1.0;
+      if (loc < 25.0f) loc += 0.25;
+      if (headRot < 0.0f) headRot += 1.0;
+      if (leftLegRot == 8.0f) isLeftRaising = false;
+      else if (leftLegRot == -8.0f) isLeftRaising = true;
+      if (armRot >= 7.0f) isArmRaising = false;
+      else if (armRot <= 0.0f) isArmRaising = true;
+      if (tailRot >= 5.0f) isTailRaising = false;
+      else if (tailRot <= 0.0f) isTailRaising = true;
+      if (earRot >= 3.0f) isEarRaising = false;
+      else if (earRot <= 0.0f) isEarRaising = true;
+      leftLegRot += isLeftRaising ? 1.0f : -1.0f;
+      rightLegRot = -leftLegRot;
+      armRot += isArmRaising ? 0.25f : -0.25f;
+      tailRot += isTailRaising ? 0.5f : -0.5f;
+      earRot += isEarRaising ? 0.25f : -0.25f;
       break;
     case 'd':
-      bodyRot += 1.0;
+      if (loc > 0.0f) loc -= 0.25;
+      if (headRot < 0.0f) headRot += 1.0;
+      if (leftLegRot == 8.0f) isLeftRaising = false;
+      else if (leftLegRot == -8.0f) isLeftRaising = true;
+      if (armRot >= 7.0f) isArmRaising = false;
+      else if (armRot <= 0.0f) isArmRaising = true;
+      if (tailRot >= 5.0f) isTailRaising = false;
+      else if (tailRot <= 0.0f) isTailRaising = true;
+      if (earRot >= 3.0f) isEarRaising = false;
+      else if (earRot <= 0.0f) isEarRaising = true;
+      leftLegRot += isLeftRaising ? 1.0f : -1.0f;
+      rightLegRot = -leftLegRot;
+      armRot += isArmRaising ? 0.25f : -0.25f;
+      tailRot += isTailRaising ? 0.5f : -0.5f;
+      earRot += isEarRaising ? 0.25f : -0.25f;
+      break;
+    case 'x':
+      baseRot -= 1.0;
       break;
     default:
       break;
