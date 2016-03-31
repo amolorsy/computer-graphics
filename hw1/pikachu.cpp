@@ -26,25 +26,216 @@ float ref[3] = { 0.0f, 0.0f, 0.0f };
 float rot[3] = { 0.0f, 0.0f, 0.0f };
 /* End */
 
-float bodyRot = 0.0f;
-float headRot = 0.0f;
-float tailRot = 0.0f;
-float armRot = 0.0f;
-float leftLegRot = 0.0f;
-float rightLegRot = 0.0f;
-float earRot = 0.0f;
-float baseRot = 0.0f; // For debug
+float baseRot; // For debug
+float bodyRot, headRot, tailRot, armsRot, earsRot;
+float leftLegRot, rightLegRot = 0;
 
-float loc = 0.0f;
+float baseTrans = 0.0f;
 
-float isLeftRaising = true, isRightRaising = true;
-float isArmRaising = true, isTailRaising = true, isEarRaising = true;
+bool isLeftLegRaising = true, isRightLegRaising = true;
+bool isArmRaising = true, isTailRaising = true, isEarRaising = true;
+
+float isLeftButtonPressed;
+float mousePosX, mousePosY;
 
 int width, height;
 
 void loadGlobalCoord() {
   glLoadIdentity();
   gluLookAt(eye[0], eye[1], eye[2], ref[0], ref[1], ref[2], 0, 1, 0);
+}
+
+void drawHead() {
+  glRotatef(headRot, 0, 1, 1);
+  glColor3f(1.0, 1.0, 0);
+  glTranslatef(0.0f, 1.5f, 1.5f);
+  glRotatef(-90.0f, 1, 0, 0);
+  
+  GLUquadricObj* head = gluNewQuadric();                                                   
+  gluSphere(head, 7.5, 100, 20); 
+  gluDeleteQuadric(head);
+}
+
+void drawLeftEye() {
+  glColor3f(0, 0, 0);
+  glTranslatef(-3.5, 1.5, 6);
+    
+  GLUquadricObj* eye = gluNewQuadric();
+  gluSphere(eye, 1.25, 100, 20);
+  gluDeleteQuadric(eye);
+}
+
+void drawRightEye() {
+  glColor3f(0, 0, 0);
+  glTranslatef(3.5, 1.5, 6);
+  
+  GLUquadricObj* eye = gluNewQuadric();
+  gluSphere(eye, 1.25, 100, 20);
+  gluDeleteQuadric(eye);
+}
+
+void drawLeftCheek() {
+  glColor3f(1, 0.35, 0.35);
+  glTranslatef(-5, -2, 4.0);
+  
+  GLUquadricObj* cheek = gluNewQuadric();
+  gluSphere(cheek, 1.5, 100, 20);
+  gluDeleteQuadric(cheek);
+}
+
+void drawRightCheek() {
+  glColor3f(1, 0.35, 0.35);
+  glTranslatef(5, -2, 4.0);
+  
+  GLUquadricObj* cheek = gluNewQuadric();
+  gluSphere(cheek, 1.5, 100, 20);
+  gluDeleteQuadric(cheek);
+}
+
+void drawMouse() {
+  glColor3f(0, 0, 0);
+  glTranslatef(0, -2.5, 0);
+  
+  glBegin(GL_LINE_STRIP);
+    glVertex3f(-2, 0, 7);
+    glVertex3f(-1, -0.5, 7);
+    glVertex3f(0, 0, 7);
+    glVertex3f(1, -0.5, 7);
+    glVertex3f(2, 0, 7);
+  glEnd();
+}
+
+void drawLeftEar() {
+  glRotatef(earsRot, 0, 0, 1);
+  glRotatef(-90.0f, 1, 0, 0);
+  glRotatef(-9.0f, 0, 1, 0);
+  glTranslatef(-4.0, 0, 5);
+  glColor3f(1.0, 1.0, 1.0);
+ 
+  GLUquadricObj* ear = gluNewQuadric();
+  gluCylinder(ear, 1.0, 1.0, 6, 100, 20);
+      
+  glPushMatrix();
+    glColor3f(0.0, 0.0, 0.0);
+    glTranslatef(0, 0, 6);
+    
+    glutSolidCone(1.0, 2, 100, 10);
+  glPopMatrix();
+
+  gluDeleteQuadric(ear);
+}
+
+void drawRightEar() {
+  glRotatef(earsRot, 0, 0, 1);
+  glRotatef(-90.0f, 1, 0, 0);
+  glRotatef(9.0f, 0, 1, 0);
+  glTranslatef(4.0, 0, 5);
+  glColor3f(1.0, 1.0, 1.0);
+  
+  GLUquadricObj* ear = gluNewQuadric();
+  gluCylinder(ear, 1.0, 1.0, 6, 100, 20);
+        
+  glPushMatrix();
+    glColor3f(0.0, 0.0, 0.0);
+    glTranslatef(0, 0, 6);
+        
+    glutSolidCone(1.0, 2, 100, 10);
+  glPopMatrix();
+
+  gluDeleteQuadric(ear);
+}
+
+void drawLeftArm() {
+  glRotatef(armsRot, 0, 0, 1);
+  glTranslatef(-4.0f, 3.0f, 10.0f);
+  glRotatef(10.0f, 0, 1, 0);
+  glRotatef(-60.0f, 1, 0, 0);
+ 
+  GLUquadricObj* arm = gluNewQuadric();
+  gluCylinder(arm, 1.5, 0.75, 6, 100, 10);
+  gluDeleteQuadric(arm);
+}
+
+void drawRightArm() {
+  glRotatef(-armsRot, 0, 0, 1);
+  glTranslatef(4.0f, 3.0f, 10.0f);
+  glRotatef(-10.0f, 0, 1, 0);
+  glRotatef(-60.0f, 1, 0, 0);
+  
+  GLUquadricObj* arm = gluNewQuadric();
+  gluCylinder(arm, 1.5, 0.75, 6, 100, 10);
+  gluDeleteQuadric(arm);
+}
+
+void drawLeftLeg() {
+  glRotatef(leftLegRot, 1, 0, 0);
+  glRotatef(-15.0f, 0, 1, 0);
+  glTranslatef(0.5f, 3.0f, 15.0f);
+ 
+  GLUquadricObj* leg = gluNewQuadric();
+  gluCylinder(leg, 0.5, 1.75, 5, 100, 10);
+  gluDeleteQuadric(leg);
+}
+
+void drawRightLeg() {
+  glRotatef(rightLegRot, 1, 0, 0);
+  glRotatef(15.0f, 0, 1, 0);
+  glTranslatef(-0.5f, 3.0f, 15.0f);
+  
+  GLUquadricObj* leg = gluNewQuadric();
+  gluCylinder(leg, 0.5, 1.75, 5, 100, 10);
+  gluDeleteQuadric(leg);
+}
+
+void drawTail() {
+  glTranslatef(4.0f, -12.0f, 0.0f);
+  glRotatef(25.0f, 0, 0, 1);
+  glRotatef(-35.0f + tailRot, 0, 1, 0); 
+  glRotatef(-135.0f + tailRot, 1, 0, 0);
+  
+  glBegin(GL_TRIANGLE_STRIP);  
+    glVertex3f(19, 8, 0);
+    glVertex3f(12, 9, 0);
+    glVertex3f(10, -2, 0);
+
+    glVertex3f(10, -2, 0);
+    glVertex3f(5, -4, 0);
+    glVertex3f(12, 9, 0);
+
+    glVertex3f(10, -2, 0);
+    glVertex3f(5, -4, 0);
+    glVertex3f(9, -4, 0);
+
+    glVertex3f(10, -2, 0);
+    glVertex3f(9, -4, 0);
+    glVertex3f(13, -3, 0);
+
+    glVertex3f(9, -4, 0);
+    glVertex3f(13, -3, 0);
+    glVertex3f(9, -8, 0);
+
+    glVertex3f(9, -4, 0);
+    glVertex3f(9, -8, 0);
+    glVertex3f(5, -10, 0);
+
+    glVertex3f(9, -8, 0);
+    glVertex3f(5, -10, 0);
+    glVertex3f(10, -11, 0);
+
+    glVertex3f(9, -8, 0);
+    glVertex3f(10, -11, 0);
+    glVertex3f(14, -9, 0);
+   
+    glColor3ub(70, 12, 17); // Dark brown color
+
+    glVertex3f(10, -11, 0);
+    glVertex3f(14, -9, 0);
+    glVertex3f(10, -15, 0);
+
+    glVertex3f(10, -11, 0);
+    glVertex3f(10, -15, 0);
+    glVertex3f(8, -13, 0);  
+  glEnd();
 }
 
 void drawHemisphere(int xUnit, int yUnit, GLfloat r, bool isUpper) {
@@ -73,7 +264,49 @@ void drawHemisphere(int xUnit, int yUnit, GLfloat r, bool isUpper) {
   glEnd();
 }
 
-void display() {
+void drawBall() {
+  glTranslatef(10.0f, 10.0f, 5.5f);
+  glRotatef(20.0f, 1, 0, 0);
+  glRotatef(180.0f, 0, 1, 0);
+  
+  glColor3f(1.0f, 0.0f, 0.0f);
+  drawHemisphere(20, 20, 7, true);
+  glColor3f(1.0f, 1.0f, 1.0f);
+  drawHemisphere(20, 20, 7, false);
+    
+  glPushMatrix();
+    glColor3f(0.0, 0.0, 0.0);   
+    glRotatef(90.0f, 1.0, 0.0, 0.0);
+    
+    GLUquadricObj* ring = gluNewQuadric();
+    gluCylinder(ring, 7, 7, 1.5, 100, 10);
+    gluDeleteQuadric(ring);
+  glPopMatrix();
+
+  glPushMatrix();
+    glColor3f(0.0, 0.0, 0.0);
+    
+    glBegin(GL_POLYGON);
+      for (int i = 0; i < 360; i++) {
+        float angle = i * RADIAN;
+        glVertex3f(cos(angle) * 3, sin(angle) * 3, 7.0f);
+      }
+    glEnd();
+  
+    glPushMatrix();
+      glColor3f(1.0, 1.0, 1.0);
+      
+      glBegin(GL_POLYGON);
+        for (int i = 0; i < 360; i++) {
+          float angle = i * RADIAN;
+          glVertex3f(cos(angle) * 2, sin(angle) * 2, 7.5f);
+        }
+      glEnd();
+    glPopMatrix();
+  glPopMatrix();
+}
+
+void glutDisplay() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   loadGlobalCoord();
 
@@ -99,225 +332,76 @@ void display() {
   glMaterialfv(GL_FRONT, GL_SPECULAR, MATERIAL_SPECULAR);
   glMateriali(GL_FRONT, GL_SHININESS, 48);
 
-  glTranslatef(0, 0, loc);
+  glTranslatef(0, 0, baseTrans);
   glRotatef(baseRot, 0, 1, 0);
   glRotatef(bodyRot, 0, 0, 1);
-
-  glColor3f(1.0, 1.0, 0); // Yellow color
   glRotatef(90.0f, 1, 0, 0);
+  glColor3f(1.0, 1.0, 0); // Yellow color
+  
   GLUquadricObj* body = gluNewQuadric();
   gluCylinder(body, 5.5, 7.0, 17, 100, 10);
   gluDeleteQuadric(body);
 
-  GLUquadricObj* arm = gluNewQuadric();
   glPushMatrix();
-    glRotatef(armRot, 0, 0, 1);
-    glTranslatef(-4.0f, 3.0f, 10.0f);
-    glRotatef(10.0f, 0, 1, 0);
-    glRotatef(-60.0f, 1, 0, 0);
-    gluCylinder(arm, 1.5, 0.75, 6, 100, 10);
+    drawLeftArm();
   glPopMatrix();
 
   glPushMatrix();
-    glRotatef(-armRot, 0, 0, 1);
-    glTranslatef(4.0f, 3.0f, 10.0f);
-    glRotatef(-10.0f, 0, 1, 0);
-    glRotatef(-60.0f, 1, 0, 0);
-    gluCylinder(arm, 1.5, 0.75, 6, 100, 10);
+    drawRightArm();
   glPopMatrix();
-  gluDeleteQuadric(arm);
+
+  glPushMatrix();
+    drawLeftLeg();
+  glPopMatrix();
+
+  glPushMatrix();
+    drawRightLeg();
+  glPopMatrix();
   
-  GLUquadricObj* leg = gluNewQuadric();
   glPushMatrix();
-    glRotatef(leftLegRot, 1, 0, 0);
-    glRotatef(-15.0f, 0, 1, 0);
-    glTranslatef(0.5f, 3.0f, 15.0f);
-    gluCylinder(leg, 0.5, 1.75, 5, 100, 10);
-  glPopMatrix();
-
-  glPushMatrix();
-    glRotatef(rightLegRot, 1, 0, 0);
-    glRotatef(15.0f, 0, 1, 0);
-    glTranslatef(-0.5f, 3.0f, 15.0f);
-    gluCylinder(leg, 0.5, 1.75, 5, 100, 10);
-  glPopMatrix();
-  gluDeleteQuadric(leg);
-
-  glPushMatrix();
-    glTranslatef(4.0f, -12.0f, 0.0f);
-    glRotatef(25.0f, 0, 0, 1);
-    glRotatef(-35.0f + tailRot, 0, 1, 0); 
-    glRotatef(-135.0f + tailRot, 1, 0, 0);
-    glBegin(GL_TRIANGLE_STRIP);  
-      glVertex3f(19, 8, 0);
-      glVertex3f(12, 9, 0);
-      glVertex3f(10, -2, 0);
-
-      glVertex3f(10, -2, 0);
-      glVertex3f(5, -4, 0);
-      glVertex3f(12, 9, 0);
-
-      glVertex3f(10, -2, 0);
-      glVertex3f(5, -4, 0);
-      glVertex3f(9, -4, 0);
-
-      glVertex3f(10, -2, 0);
-      glVertex3f(9, -4, 0);
-      glVertex3f(13, -3, 0);
-
-      glVertex3f(9, -4, 0);
-      glVertex3f(13, -3, 0);
-      glVertex3f(9, -8, 0);
-
-      glVertex3f(9, -4, 0);
-      glVertex3f(9, -8, 0);
-      glVertex3f(5, -10, 0);
-
-      glVertex3f(9, -8, 0);
-      glVertex3f(5, -10, 0);
-      glVertex3f(10, -11, 0);
-
-      glVertex3f(9, -8, 0);
-      glVertex3f(10, -11, 0);
-      glVertex3f(14, -9, 0);
-   
-      glColor3ub(70, 12, 17); // Dark brown color
-
-      glVertex3f(10, -11, 0);
-      glVertex3f(14, -9, 0);
-      glVertex3f(10, -15, 0);
-
-      glVertex3f(10, -11, 0);
-      glVertex3f(10, -15, 0);
-      glVertex3f(8, -13, 0);  
-    glEnd();
-
-    glPushMatrix();
-      glTranslatef(10.0f, 10.0f, 5.5f);
-      glRotatef(20.0f, 1, 0, 0);
-      glRotatef(180.0f, 0, 1, 0);
-      glColor3f(1.0f, 0.0f, 0.0f);
-      drawHemisphere(20, 20, 7, true);
-      glColor3f(1.0f, 1.0f, 1.0f);
-      drawHemisphere(20, 20, 7, false);
+    drawTail();      
     
-      glPushMatrix();
-        glColor3f(0.0, 0.0, 0.0);   
-        glRotatef(90.0f, 1.0, 0.0, 0.0);
-        GLUquadricObj* ring = gluNewQuadric();
-        gluCylinder(ring, 7, 7, 1.5, 100, 10);
-        gluDeleteQuadric(ring);
-      glPopMatrix();
-
-      glPushMatrix();
-        glColor3f(0.0, 0.0, 0.0);
-        glBegin(GL_POLYGON);
-          for (int i = 0; i < 360; i++) {
-            float angle = i * RADIAN;
-            glVertex3f(cos(angle) * 3, sin(angle) * 3, 7.0f);
-          }
-        glEnd();
-  
-        glPushMatrix();
-          glColor3f(1.0, 1.0, 1.0);
-          glBegin(GL_POLYGON);
-            for (int i = 0; i < 360; i++) {
-              float angle = i * RADIAN;
-              glVertex3f(cos(angle) * 2, sin(angle) * 2, 7.5f);
-            }
-          glEnd();
-        glPopMatrix();
-      glPopMatrix();
+    glPushMatrix();
+      drawBall();
     glPopMatrix();
   glPopMatrix();
 
   glPushMatrix();
-    glRotatef(headRot, 0, 1, 1);
-    glColor3f(1.0, 1.0, 0);
-    glTranslatef(0.0f, 1.5f, 1.5f);
-    glRotatef(-90.0f, 1, 0, 0);
-    GLUquadricObj* head = gluNewQuadric();                                                   
-    gluSphere(head, 7.5, 100, 20); 
-    gluDeleteQuadric(head);
-
-    GLUquadricObj* eye = gluNewQuadric();
+    drawHead();  
+ 
     glPushMatrix();
-      glColor3f(0, 0, 0);
-      glTranslatef(-3.5, 1.5, 6);
-      gluSphere(eye, 1.25, 100, 20);
+      drawLeftEye();
     glPopMatrix();
 
     glPushMatrix();
-      glColor3f(0, 0, 0);
-      glTranslatef(3.5, 1.5, 6);
-      gluSphere(eye, 1.25, 100, 20);
-    glPopMatrix();
-    gluDeleteQuadric(eye);
-
-    GLUquadricObj* cheek = gluNewQuadric();
-    glPushMatrix();
-      glColor3f(1, 0.35, 0.35);
-      glTranslatef(-5, -2, 4.0);
-      gluSphere(cheek, 1.5, 100, 20);
+      drawRightEye();
     glPopMatrix();
 
     glPushMatrix();
-      glColor3f(1, 0.35, 0.35);
-      glTranslatef(5, -2, 4.0);
-      gluSphere(cheek, 1.5, 100, 20);
-    glPopMatrix();
-    gluDeleteQuadric(cheek);
-
-    glPushMatrix();
-      glTranslatef(0, -2.5, 0);
-      glBegin(GL_LINE_STRIP);
-        glColor3f(0, 0, 0);
-        glVertex3f(-2, 0, 7);
-        glVertex3f(-1, -0.5, 7);
-        glVertex3f(0, 0, 7);
-        glVertex3f(1, -0.5, 7);
-        glVertex3f(2, 0, 7);
-      glEnd();
-    glPopMatrix();
-
-    GLUquadricObj* ear = gluNewQuadric();
-    glPushMatrix();
-      glRotatef(earRot, 0, 0, 1);
-      glRotatef(-90.0f, 1, 0, 0);
-      glRotatef(-9.0f, 0, 1, 0);
-      glTranslatef(-4.0, 0, 5);
-      glColor3f(1.0, 1.0, 1.0);
-      gluCylinder(ear, 1.0, 1.0, 6, 100, 20);
-      
-      glPushMatrix();
-        glColor3f(0.0, 0.0, 0.0);
-        glTranslatef(0, 0, 6);
-        glutSolidCone(1.0, 2, 100, 10);
-      glPopMatrix();
+      drawLeftCheek();
     glPopMatrix();
 
     glPushMatrix();
-      glRotatef(earRot, 0, 0, 1);
-      glRotatef(-90.0f, 1, 0, 0);
-      glRotatef(9.0f, 0, 1, 0);
-      glTranslatef(4.0, 0, 5);
-      glColor3f(1.0, 1.0, 1.0);
-      gluCylinder(ear, 1.0, 1.0, 6, 100, 20);
-        
-      glPushMatrix();
-        glColor3f(0.0, 0.0, 0.0);
-        glTranslatef(0, 0, 6);
-        glutSolidCone(1.0, 2, 100, 10);
-        glPopMatrix();
-      glPopMatrix();
+      drawRightCheek();
     glPopMatrix();
-    gluDeleteQuadric(ear);
+
+    glPushMatrix();
+      drawMouse();  
+    glPopMatrix();
+
+    glPushMatrix();
+      drawLeftEar();
+    glPopMatrix();
+
+    glPushMatrix();
+      drawRightEar();
+    glPopMatrix();
   glPopMatrix();
   
   glutSwapBuffers();
 }
 
-void resize(int w, int h) {
+void glutReshape(int w, int h) {
   if (w == 0 || h == 0) return;
 
   width = w;
@@ -330,7 +414,7 @@ void resize(int w, int h) {
   glLoadIdentity();
 }
 
-void keyPress(unsigned char key, int x, int y) {
+void glutKeyboard(unsigned char key, int x, int y) {
   switch (key) {
     case 27:
       exit(0);
@@ -338,58 +422,58 @@ void keyPress(unsigned char key, int x, int y) {
     case 'w':
       if (headRot > -15.0f) headRot -= 1.0;
       if (tailRot < 15.0f) tailRot += 1.0;
-      if (armRot < 15.0f) armRot += 1.0;
+      if (armsRot < 15.0f) armsRot += 1.0;
       break;
     case 's':
       if (headRot < 0.0f) headRot += 1.0;
       if (tailRot > 0.0f) tailRot -= 1.0;
-      if (armRot > 0.0f) armRot -= 1.0;
+      if (armsRot > 0.0f) armsRot -= 1.0;
       break;
     case 'a':
-      if (loc < 25.0f) loc += 0.25;
+      if (baseTrans < 25.0f) baseTrans += 0.25;
       if (headRot < 0.0f) headRot += 1.0;
-      if (leftLegRot == 8.0f) isLeftRaising = false;
-      else if (leftLegRot == -8.0f) isLeftRaising = true;
-      if (armRot >= 7.0f) isArmRaising = false;
-      else if (armRot <= 0.0f) isArmRaising = true;
+      if (leftLegRot == 8.0f) isLeftLegRaising = false;
+      else if (leftLegRot == -8.0f) isLeftLegRaising = true;
+      if (armsRot >= 7.0f) isArmRaising = false;
+      else if (armsRot <= 0.0f) isArmRaising = true;
       if (tailRot >= 5.0f) isTailRaising = false;
       else if (tailRot <= 0.0f) isTailRaising = true;
-      if (earRot >= 3.0f) isEarRaising = false;
-      else if (earRot <= 0.0f) isEarRaising = true;
-      leftLegRot += isLeftRaising ? 1.0f : -1.0f;
+      if (earsRot >= 3.0f) isEarRaising = false;
+      else if (earsRot <= 0.0f) isEarRaising = true;
+      leftLegRot += isLeftLegRaising ? 1.0f : -1.0f;
       rightLegRot = -leftLegRot;
-      armRot += isArmRaising ? 0.25f : -0.25f;
+      armsRot += isArmRaising ? 0.25f : -0.25f;
       tailRot += isTailRaising ? 0.5f : -0.5f;
-      earRot += isEarRaising ? 0.25f : -0.25f;
+      earsRot += isEarRaising ? 0.25f : -0.25f;
       break;
     case 'd':
-      if (loc > 0.0f) loc -= 0.25;
+      if (baseTrans > 0.0f) baseTrans -= 0.25;
       if (headRot < 0.0f) headRot += 1.0;
-      if (leftLegRot == 8.0f) isLeftRaising = false;
-      else if (leftLegRot == -8.0f) isLeftRaising = true;
-      if (armRot >= 7.0f) isArmRaising = false;
-      else if (armRot <= 0.0f) isArmRaising = true;
+      if (leftLegRot == 8.0f) isLeftLegRaising = false;
+      else if (leftLegRot == -8.0f) isLeftLegRaising = true;
+      if (armsRot >= 7.0f) isArmRaising = false;
+      else if (armsRot <= 0.0f) isArmRaising = true;
       if (tailRot >= 5.0f) isTailRaising = false;
       else if (tailRot <= 0.0f) isTailRaising = true;
-      if (earRot >= 3.0f) isEarRaising = false;
-      else if (earRot <= 0.0f) isEarRaising = true;
-      leftLegRot += isLeftRaising ? 1.0f : -1.0f;
+      if (earsRot >= 3.0f) isEarRaising = false;
+      else if (earsRot <= 0.0f) isEarRaising = true;
+      leftLegRot += isLeftLegRaising ? 1.0f : -1.0f;
       rightLegRot = -leftLegRot;
-      armRot += isArmRaising ? 0.25f : -0.25f;
+      armsRot += isArmRaising ? 0.25f : -0.25f;
       tailRot += isTailRaising ? 0.5f : -0.5f;
-      earRot += isEarRaising ? 0.25f : -0.25f;
+      earsRot += isEarRaising ? 0.25f : -0.25f;
       break;
     case 'x':
-      baseRot -= 1.0;
+      baseRot -= 1.0; // For debug
       break;
     default:
       break;
   }
 }
 
-void timer(int unused) {
+void glutTimer(int unused) {
   glutPostRedisplay();
-  glutTimerFunc(TIME_INTERVAL, timer, 0);
+  glutTimerFunc(TIME_INTERVAL, glutTimer, 0);
 }
 
 int main(int argc, char **argv) {
@@ -400,10 +484,12 @@ int main(int argc, char **argv) {
   
   glutCreateWindow("Pikachu");
 
-  glutReshapeFunc(resize);
-  glutDisplayFunc(display);
-  glutTimerFunc(TIME_INTERVAL, timer, 0);
-  glutKeyboardFunc(keyPress);
+  glutReshapeFunc(glutReshape);
+  glutDisplayFunc(glutDisplay);
+  glutTimerFunc(TIME_INTERVAL, glutTimer, 0);
+  glutKeyboardFunc(glutKeyboard);
+  // glutMouseFunc(glutMouse);
+  // glutMotionFunc(glutMotion);
 
   glutMainLoop();
 
