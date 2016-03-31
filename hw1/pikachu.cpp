@@ -15,27 +15,28 @@ const GLfloat LIGHT_POSITION[] = { -100.0f, 125.0f, 100.0f, 1.0f };
 
 const GLfloat AMBIENT_SUB_LIGHT[] = { 0.3f, 0.3f, 0.3f, 1.0f };
 const GLfloat DIFFUSE_SUB_LIGHT[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-const GLfloat SUB_LIGHT_POSITION[] = { 5.0f, 2.0f, -5.0f, 1.0f };
+const GLfloat SUB_LIGHT_POSITION[] = { 7.0f, 0.0f, -5.0f, 1.0f };
 
 const GLfloat MATERIAL_AMBIENT[] = { 0.0f, 0.75f, 0.0f, 1.0f };
 const GLfloat MATERIAL_SPECULAR[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 /* Vectors that makes the rotation and translation of the cube */
-float eye[3] = { 20.0f, 0.0f, 100.0f };
+float eye[3] = { 25.0f, 0.0f, 100.0f };
 float ref[3] = { 0.0f, 0.0f, 0.0f };
 float rot[3] = { 0.0f, 0.0f, 0.0f };
 /* End */
 
-float baseRot; // For debug
+float baseTrans;
 float bodyRot, headRot, tailRot, armsRot, earsRot;
-float leftLegRot, rightLegRot = 0;
+float leftLegRot, rightLegRot;
+float ballRot;
 
-float baseTrans = 0.0f;
+bool isHeadRaising, isEarRaising;
+bool isLeftLegRaising, isRightLegRaising;
+bool isArmRaising, isTailRaising;
+bool isBallRaising;
 
-bool isLeftLegRaising = true, isRightLegRaising = true;
-bool isArmRaising = true, isTailRaising = true, isEarRaising = true;
-
-float isLeftButtonPressed;
+bool isLeftButtonPressed;
 float mousePosX, mousePosY;
 
 int width, height;
@@ -266,6 +267,7 @@ void drawHemisphere(int xUnit, int yUnit, GLfloat r, bool isUpper) {
 
 void drawBall() {
   glTranslatef(10.0f, 10.0f, 5.5f);
+  glRotatef(ballRot, 0, 0, 1);
   glRotatef(20.0f, 1, 0, 0);
   glRotatef(180.0f, 0, 1, 0);
   
@@ -333,7 +335,6 @@ void glutDisplay() {
   glMateriali(GL_FRONT, GL_SHININESS, 48);
 
   glTranslatef(0, 0, baseTrans);
-  glRotatef(baseRot, 0, 1, 0);
   glRotatef(bodyRot, 0, 0, 1);
   glRotatef(90.0f, 1, 0, 0);
   glColor3f(1.0, 1.0, 0); // Yellow color
@@ -419,54 +420,68 @@ void glutKeyboard(unsigned char key, int x, int y) {
     case 27:
       exit(0);
       break;
-    case 'w':
+    default:
+      break;
+  }
+}
+
+void glutSpecial(int key, int x, int y) {
+  switch (key) {
+    case GLUT_KEY_UP:
       if (headRot > -15.0f) headRot -= 1.0;
       if (tailRot < 15.0f) tailRot += 1.0;
-      if (armsRot < 15.0f) armsRot += 1.0;
+      if (armsRot < 20.0f) armsRot += 1.0;
+      if (ballRot < 30.0f) ballRot += 1.5;
       break;
-    case 's':
+    case GLUT_KEY_DOWN:
       if (headRot < 0.0f) headRot += 1.0;
       if (tailRot > 0.0f) tailRot -= 1.0;
       if (armsRot > 0.0f) armsRot -= 1.0;
+      if (ballRot > 0.0f) ballRot -= 1.5;
       break;
-    case 'a':
+    case GLUT_KEY_LEFT:
       if (baseTrans < 25.0f) baseTrans += 0.25;
-      if (headRot < 0.0f) headRot += 1.0;
-      if (leftLegRot == 8.0f) isLeftLegRaising = false;
-      else if (leftLegRot == -8.0f) isLeftLegRaising = true;
-      if (armsRot >= 7.0f) isArmRaising = false;
-      else if (armsRot <= 0.0f) isArmRaising = true;
-      if (tailRot >= 5.0f) isTailRaising = false;
-      else if (tailRot <= 0.0f) isTailRaising = true;
-      if (earsRot >= 3.0f) isEarRaising = false;
-      else if (earsRot <= 0.0f) isEarRaising = true;
-      leftLegRot += isLeftLegRaising ? 1.0f : -1.0f;
+      if (headRot >= 3.0f) isHeadRaising = true;
+      else if (headRot <= -3.0f) isHeadRaising = false;
+      if (leftLegRot >= 10.0f) isLeftLegRaising = true;
+      else if (leftLegRot <= -10.0f) isLeftLegRaising = false;
+      if (armsRot >= 7.0f) isArmRaising = true;
+      else if (armsRot <= 0.0f) isArmRaising = false;
+      if (tailRot >= 5.0f) isTailRaising = true;
+      else if (tailRot <= 0.0f) isTailRaising = false;
+      if (earsRot >= 3.0f) isEarRaising = true;
+      else if (earsRot <= 0.0f) isEarRaising = false;
+      if (ballRot >= 50.0f) isBallRaising = true;
+      else if (ballRot <= 0.0f) isBallRaising = false;
+      headRot += isHeadRaising ? -0.5f : 0.5f;
+      leftLegRot += isLeftLegRaising ? -1.0f : 1.0f;
       rightLegRot = -leftLegRot;
-      armsRot += isArmRaising ? 0.25f : -0.25f;
-      tailRot += isTailRaising ? 0.5f : -0.5f;
-      earsRot += isEarRaising ? 0.25f : -0.25f;
+      armsRot += isArmRaising ? -0.5f : 0.5f;
+      tailRot += isTailRaising ? -0.5f : 0.5f;
+      earsRot += isEarRaising ? -0.25f : 0.25f;
+      ballRot += isBallRaising ? -1.0f : 1.0f;
       break;
-    case 'd':
-      if (baseTrans > 0.0f) baseTrans -= 0.25;
-      if (headRot < 0.0f) headRot += 1.0;
-      if (leftLegRot == 8.0f) isLeftLegRaising = false;
-      else if (leftLegRot == -8.0f) isLeftLegRaising = true;
-      if (armsRot >= 7.0f) isArmRaising = false;
-      else if (armsRot <= 0.0f) isArmRaising = true;
-      if (tailRot >= 5.0f) isTailRaising = false;
-      else if (tailRot <= 0.0f) isTailRaising = true;
-      if (earsRot >= 3.0f) isEarRaising = false;
-      else if (earsRot <= 0.0f) isEarRaising = true;
-      leftLegRot += isLeftLegRaising ? 1.0f : -1.0f;
+    case GLUT_KEY_RIGHT:
+      if (baseTrans > -7.5f) baseTrans -= 0.25;
+      if (headRot >= 3.0f) isHeadRaising = true;
+      else if (headRot <= -3.0f) isHeadRaising = false;
+      if (leftLegRot >= 10.0f) isLeftLegRaising = true;
+      else if (leftLegRot <= -10.0f) isLeftLegRaising = false;
+      if (armsRot >= 7.0f) isArmRaising = true;
+      else if (armsRot <= 0.0f) isArmRaising = false;
+      if (tailRot >= 5.0f) isTailRaising = true;
+      else if (tailRot <= 0.0f) isTailRaising = false;
+      if (earsRot >= 3.0f) isEarRaising = true;
+      else if (earsRot <= 0.0f) isEarRaising = false;
+      if (ballRot >= 50.0f) isBallRaising = true;
+      else if (ballRot <= 0.0f) isBallRaising = false;
+      headRot += isHeadRaising ? -0.5f : 0.5f;
+      leftLegRot += isLeftLegRaising ? -1.0f : 1.0f;
       rightLegRot = -leftLegRot;
-      armsRot += isArmRaising ? 0.25f : -0.25f;
-      tailRot += isTailRaising ? 0.5f : -0.5f;
-      earsRot += isEarRaising ? 0.25f : -0.25f;
-      break;
-    case 'x':
-      baseRot -= 1.0; // For debug
-      break;
-    default:
+      armsRot += isArmRaising ? -0.5f : 0.5f;
+      tailRot += isTailRaising ? -0.5f : 0.5f;
+      earsRot += isEarRaising ? -0.25f : 0.25f;
+      ballRot += isBallRaising ? -1.0f : 1.0f;
       break;
   }
 }
@@ -488,6 +503,7 @@ int main(int argc, char **argv) {
   glutDisplayFunc(glutDisplay);
   glutTimerFunc(TIME_INTERVAL, glutTimer, 0);
   glutKeyboardFunc(glutKeyboard);
+  glutSpecialFunc(glutSpecial);
   // glutMouseFunc(glutMouse);
   // glutMotionFunc(glutMotion);
 
