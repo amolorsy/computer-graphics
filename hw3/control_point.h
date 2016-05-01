@@ -1,12 +1,12 @@
 class ControlPoint {
   private:
     float mX;
-    float mY;
+    float mZ;
 
   public:
-    ControlPoint(float x, float y);
+    ControlPoint(float x, float z);
     ~ControlPoint();
 
     float getX();
-    float getY();
+    float getZ();
 };

@@ -22,7 +22,7 @@ static inline void trim(string &str) {
   rtrim(str);
 }
 
-static inline void stripComments(string &str) {
+static inline void strip(string &str) {
   int found = str.find('#');
   if (found != string::npos) str.erase(found, str.length() - 1);
 }

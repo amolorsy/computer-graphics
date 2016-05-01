@@ -22,6 +22,10 @@ void CrossSection::setTranslationFactor(std::vector<float> translationFactor) {
   mTranslationFactor = translationFactor;
 }
 
+void CrossSection::setSplinePoints(std::vector<ControlPoint> splinePoints) {
+  mSplinePoints = splinePoints;
+}
+
 std::vector<ControlPoint> CrossSection::getControlPoints() {
   return mControlPoints;
 }
@@ -36,4 +40,8 @@ std::vector<float> CrossSection::getRotationFactor() {
 
 std::vector<float> CrossSection::getTranslationFactor() {
   return mTranslationFactor;
+}
+
+std::vector<ControlPoint> CrossSection::getSplinePoints() {
+  return mSplinePoints;
 }

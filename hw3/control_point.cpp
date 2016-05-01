@@ -1,8 +1,8 @@
 #include "control_point.h"
 
-ControlPoint::ControlPoint(float x, float y) {
+ControlPoint::ControlPoint(float x, float z) {
   mX = x;
-  mY = y;
+  mZ = z;
 }
 
 ControlPoint::~ControlPoint() {
@@ -12,6 +12,6 @@ float ControlPoint::getX() {
   return mX;
 }
 
-float ControlPoint::getY() {
-  return mY;
+float ControlPoint::getZ() {
+  return mZ;
 }

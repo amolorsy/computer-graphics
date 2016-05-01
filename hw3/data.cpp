@@ -11,17 +11,17 @@ void Data::parse(char *filePath) {
 
   string line;
   getline(fin, line);
-  stripComments(line);
+  strip(line);
   trim(line);
   mSplineType = line;
 
   getline(fin, line);
-  stripComments(line);
+  strip(line);
   trim(line);
   mNumberOfCrossSections = atoi(line.c_str());
 
   getline(fin, line);
-  stripComments(line);
+  strip(line);
   trim(line);
   mNumberOfControlPoints = atoi(line.c_str());
 
@@ -31,7 +31,7 @@ void Data::parse(char *filePath) {
   int i = 0, j = 0;
   while (!fin.eof()) {
     getline(fin, line);
-    stripComments(line);
+    strip(line);
     trim(line);
     if (line.length() == 0) continue;
     
