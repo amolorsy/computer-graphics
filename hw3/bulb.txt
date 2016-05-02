@@ -1,0 +1,195 @@
+BSPLINE # Curve type (BSPLINE or CATMULL_ROM)
+16 # The number of cross sections
+8 # The number of control points per cross section
+
+7.00000 0.00000 # The 2D position of control points on the X-Z plane
+4.94974 4.94974
+0.00000 7.00000
+-4.94974 4.94974
+-7.00000 0.00000
+-4.94974 -4.94974
+0.00000 -7.00000
+4.94974 -4.94974
+0.0 # Scaling factor
+0.0 1 0 0 # Rotation factor
+0 -50 0 # Position factor
+
+7.00000 0.00000 # The 2D position of control points on the X-Z plane
+4.94974 4.94974
+0.00000 7.00000
+-4.94974 4.94974
+-7.00000 0.00000
+-4.94974 -4.94974
+0.00000 -7.00000
+4.94974 -4.94974
+1.5 # Scaling factor
+0.0 1 0 0 # Rotation factor
+0 -45 0 # Position factor
+
+7.00000 0.00000 # The 2D position of control points on the X-Z plane
+4.94974 4.94974
+0.00000 7.00000
+-4.94974 4.94974
+-7.00000 0.00000
+-4.94974 -4.94974
+0.00000 -7.00000
+4.94974 -4.94974
+1.8 # Scaling factor
+0.0 1 0 0 # Rotation factor
+0 -43 0 # Position factor
+
+7.00000 0.00000 # The 2D position of control points on the X-Z plane
+4.94974 4.94974
+0.00000 7.00000
+-4.94974 4.94974
+-7.00000 0.00000
+-4.94974 -4.94974
+0.00000 -7.00000
+4.94974 -4.94974
+1.5 # Scaling factor
+0.0 1 0 0 # Rotation factor
+0 -41 0 # Position factor
+
+7.00000 0.00000 # The 2D position of control points on the X-Z plane
+4.94974 4.94974
+0.00000 7.00000
+-4.94974 4.94974
+-7.00000 0.00000
+-4.94974 -4.94974
+0.00000 -7.00000
+4.94974 -4.94974
+1.8 # Scaling factor
+0.0 1 0 0 # Rotation factor
+0 -39 0 # Position factor
+
+7.00000 0.00000 # The 2D position of control points on the X-Z plane
+4.94974 4.94974
+0.00000 7.00000
+-4.94974 4.94974
+-7.00000 0.00000
+-4.94974 -4.94974
+0.00000 -7.00000
+4.94974 -4.94974
+1.5 # Scaling factor
+0.0 1 0 0 # Rotation factor
+0 -37 0 # Position factor
+
+7.00000 0.00000 # The 2D position of control points on the X-Z plane
+4.94974 4.94974
+0.00000 7.00000
+-4.94974 4.94974
+-7.00000 0.00000
+-4.94974 -4.94974
+0.00000 -7.00000
+4.94974 -4.94974
+1.8 # Scaling factor
+0.0 1 0 0 # Rotation factor
+0 -35 0 # Position factor
+
+7.00000 0.00000 # The 2D position of control points on the X-Z plane
+4.94974 4.94974
+0.00000 7.00000
+-4.94974 4.94974
+-7.00000 0.00000
+-4.94974 -4.94974
+0.00000 -7.00000
+4.94974 -4.94974
+1.5 # Scaling factor
+0.0 1 0 0 # Rotation factor
+0 -33 0 # Position factor
+
+7.00000 0.00000 # The 2D position of control points on the X-Z plane
+4.94974 4.94974
+0.00000 7.00000
+-4.94974 4.94974
+-7.00000 0.00000
+-4.94974 -4.94974
+0.00000 -7.00000
+4.94974 -4.94974
+1.8 # Scaling factor
+0.0 1 0 0 # Rotation factor
+0 -31 0 # Position factor
+
+7.00000 0.00000 # The 2D position of control points on the X-Z plane
+4.94974 4.94974
+0.00000 7.00000
+-4.94974 4.94974
+-7.00000 0.00000
+-4.94974 -4.94974
+0.00000 -7.00000
+4.94974 -4.94974
+2.0 # Scaling factor
+0.0 1 0 0 # Rotation factor
+0 -29 0 # Position factor
+
+7.00000 0.00000 # The 2D position of control points on the X-Z plane
+4.94974 4.94974
+0.00000 7.00000
+-4.94974 4.94974
+-7.00000 0.00000
+-4.94974 -4.94974
+0.00000 -7.00000
+4.94974 -4.94974
+2.2 # Scaling factor
+0.0 1 0 0 # Rotation factor
+0 -20 0 # Position factor
+
+7.00000 0.00000 # The 2D position of control points on the X-Z plane
+4.94974 4.94974
+0.00000 7.00000
+-4.94974 4.94974
+-7.00000 0.00000
+-4.94974 -4.94974
+0.00000 -7.00000
+4.94974 -4.94974
+3.5 # Scaling factor
+0.0 1 0 0 # Rotation factor
+0 -5 0 # Position factor
+
+7.00000 0.00000 # The 2D position of control points on the X-Z plane
+4.94974 4.94974
+0.00000 7.00000
+-4.94974 4.94974
+-7.00000 0.00000
+-4.94974 -4.94974
+0.00000 -7.00000
+4.94974 -4.94974
+5.3 # Scaling factor
+0.0 1 0 0 # Rotation factor
+0 22 0 # Position factor
+
+7.00000 0.00000 # The 2D position of control points on the X-Z plane
+4.94974 4.94974
+0.00000 7.00000
+-4.94974 4.94974
+-7.00000 0.00000
+-4.94974 -4.94974
+0.00000 -7.00000
+4.94974 -4.94974
+3.0 # Scaling factor
+0.0 1 0 0 # Rotation factor
+0 49 0 # Position factor
+
+7.00000 0.00000 # The 2D position of control points on the X-Z plane
+4.94974 4.94974
+0.00000 7.00000
+-4.94974 4.94974
+-7.00000 0.00000
+-4.94974 -4.94974
+0.00000 -7.00000
+4.94974 -4.94974
+0.7 # Scaling factor
+0.0 1 0 0 # Rotation factor
+0 57 0 # Position factor
+
+7.00000 0.00000 # The 2D position of control points on the X-Z plane
+4.94974 4.94974
+0.00000 7.00000
+-4.94974 4.94974
+-7.00000 0.00000
+-4.94974 -4.94974
+0.00000 -7.00000
+4.94974 -4.94974
+0.0 # Scaling factor
+0.0 1 0 0 # Rotation factor
+0 58 0 # Position factor
