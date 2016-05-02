@@ -45,4 +45,6 @@ class Data {
     int getNumberOfCrossSections();
     int getNumberOfControlPoints();
     vector<CrossSection> getCrossSections();
+
+    void modifyNumberOfCrossSections(int numberOfCrossSections);
 };

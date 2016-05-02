@@ -1,3 +1,6 @@
+#include <vector>
+#include <cmath>
+
 #include <GL/gl.h>
 #include <GL/glu.h>
 
@@ -35,7 +38,7 @@ class Camera {
     void zoomIn();
     void zoomOut();
     void pan(int direction);
-    void showAll();
+    void showAll(std::vector<glm::vec3> vertices);
     void seek(int x, int y);
 
     void changeAspect(float aspect);

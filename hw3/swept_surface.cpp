@@ -98,7 +98,12 @@ vector<float> interpolateScalars(vector<float> scalars) {
 }
 
 void generatePolygonalMesh() {
-  vector<CrossSection> crossSections = data->getCrossSections();
+  vector<CrossSection> crossSections;
+  crossSections.push_back(data->getCrossSections().at(0));
+  for (int i = 0; i < data->getCrossSections().size(); i++)
+    crossSections.push_back(data->getCrossSections().at(i));
+  crossSections.push_back(data->getCrossSections().at(data->getNumberOfCrossSections() - 1));
+  data->modifyNumberOfCrossSections(data->getNumberOfCrossSections() + 2);
 
   for (int i = 0; i < crossSections.size(); i++) {
     CrossSection section = crossSections.at(i);
@@ -143,23 +148,23 @@ void generatePolygonalMesh() {
     vector<glm::vec3> line = lines.at(i);
     for (int j = 0; j < line.size(); j++) {
       glm::vec3 point = line.at(j);
-      glm::mat4 S = glm::scale(glm::vec3(scales.at(j), scales.at(j), scales.at(j)));
-      glm::mat4 R = glm::rotate(angles.at(j), axes.at(j));
-      glm::mat4 T = glm::translate(glm::vec3(translations.at(j).x, translations.at(j).y, translations.at(j).z));
-      mesh->addVertex(glm::vec3(T * R * S * glm::vec4(point.x, point.y, point.z, 1.0f)));
+      point = scales.at(j) * point;
+      point = glm::angleAxis(angles.at(j), axes.at(j)) * point;
+      point = translations.at(j) + point;
+      mesh->addVertex(point);
     } 
   }
 
   int x = STEPS * data->getNumberOfControlPoints();
   int y = STEPS * (data->getNumberOfCrossSections() - 3);
   
-  for (int i = 1; i < x; i++) {
+  for (int i = 0; i < x; i++) {
     for (int j = 1; j < y; j++) {
       int indices[4] = {
-        (i - 1) * y + (j - 1),
-        (i - 1) * y + j,
-        i * y + (j - 1),
-        i * y + j
+        circularIndex(x, i - 1) * y + (j - 1),
+        circularIndex(x, i - 1) * y + j,
+        circularIndex(x, i) * y + (j - 1),
+        circularIndex(x, i) * y + j
       };
       vector<int> i1, i2;
       i1.push_back(indices[0]);
@@ -168,6 +173,7 @@ void generatePolygonalMesh() {
       i2.push_back(indices[3]);
       i2.push_back(indices[2]);
       i2.push_back(indices[1]);
+      
       mesh->addFace(Face(i1));
       mesh->addFace(Face(i2));
     }
@@ -185,29 +191,15 @@ void glutDisplay() {
   glLoadIdentity();
   glMultMatrixf(glm::value_ptr(camera->calculateViewMatrix()));
 
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glShadeModel(GL_SMOOTH);
+  glEnable(GL_CULL_FACE);
+  glEnable(GL_DEPTH_TEST);  
+  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-  glEnable(GL_DEPTH_TEST);
-  glEnable(GL_LIGHTING);
-                                             
-  glEnable(GL_LIGHT0);
-  glLightfv(GL_LIGHT0, GL_AMBIENT, AMBIENT_LIGHT);
-  glLightfv(GL_LIGHT0, GL_DIFFUSE, DIFFUSE_LIGHT);
-  glLightfv(GL_LIGHT0, GL_SPECULAR, SPECULAR_LIGHT);
-  glLightfv(GL_LIGHT0, GL_POSITION, LIGHT_POSITION);
-                                                                     
-  glEnable(GL_LIGHT1);
-  glLightfv(GL_LIGHT1, GL_AMBIENT, AMBIENT_SUB_LIGHT);
-  glLightfv(GL_LIGHT1, GL_DIFFUSE, DIFFUSE_SUB_LIGHT);
-  glLightfv(GL_LIGHT1, GL_SPECULAR, SPECULAR_LIGHT);
-  glLightfv(GL_LIGHT1, GL_POSITION, SUB_LIGHT_POSITION);
-
-  glEnable(GL_COLOR_MATERIAL); 
-  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, MATERIAL_AMBIENT); 
-  glMaterialfv(GL_FRONT, GL_SPECULAR, MATERIAL_SPECULAR);
-  glMateriali(GL_FRONT, GL_SHININESS, 48);
-
-  glColor3f(1.0f, 0.0f, 0.0f); // Red color
+  glColor3f(0.0f, 1.0f, 0.0f); // Green color
   
   vector<Face> faces = mesh->getFaces();
   vector<glm::vec3> vertices = mesh->getVertices();
@@ -262,7 +254,7 @@ void glutKeyboard(unsigned char key, int x, int y) {
       camera->zoomOut();
       break;
     case 'e':
-      camera->showAll();
+      camera->showAll(mesh->getVertices());
       break;
     default:
       break;

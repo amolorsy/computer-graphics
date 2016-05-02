@@ -1,10 +1,12 @@
 #include "camera.h"
 
+#include <iostream>
+
 Camera::Camera(int width, int height) {
   mFovY = 45.0f;
   mAspect = (float) width / (float) height;
   mNear = 0.1f;
-  mFar = 200.0f;
+  mFar = 300.0f;
   
   mEye = glm::vec3(0.0f, 0.0f, 65.0f);
   mRef = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -86,7 +88,25 @@ void Camera::pan(int direction) {
   }
 }
 
-void Camera::showAll() {
+void Camera::showAll(std::vector<glm::vec3> vertices) {
+  glm::vec3 min = vertices.at(0);
+  glm::vec3 max = vertices.at(0);
+  
+  for (int i = 1; i < vertices.size(); i++) {
+    glm::vec3 v = vertices.at(i);
+    if (v.x < min.x) min.x = v.x;
+    if (v.y < min.y) min.y = v.y;
+    if (v.z < min.z) min.z = v.z;
+    if (v.x > max.x) max.x = v.x;
+    if (v.y > max.y) max.y = v.y;
+    if (v.z > max.z) max.z = v.z;
+  }
+  
+  float r = glm::length(max - min) / 2;
+  float d = r / tan(mFovY / 2);
+  mRef = glm::vec3((min.x + max.x) / 2, (min.y + max.y) / 2, (min.z + max.z) / 2);
+  mEye = mRef + d * glm::normalize(mEye - mRef);
+  mUp = glm::normalize(glm::cross(mRef, mEye));
 }
 
 void Camera::seek(int x, int y) {

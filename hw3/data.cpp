@@ -80,3 +80,7 @@ int Data::getNumberOfControlPoints() {
 vector<CrossSection> Data::getCrossSections() {
   return mCrossSections;
 }
+
+void Data::modifyNumberOfCrossSections(int numberOfCrossSections) {
+  mNumberOfCrossSections = numberOfCrossSections;
+}

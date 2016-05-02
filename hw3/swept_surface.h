@@ -20,21 +20,24 @@ const int CATMULL_ROM_SPLINE = 1;
 const int STEPS = 5;
 
 /* For light and material */
-const GLfloat AMBIENT_LIGHT[] = { 0.1f, 0.1f, 0.0f, 1.0f };
-const GLfloat DIFFUSE_LIGHT[] = { 1.0f, 1.0f, 0.0f, 1.0f };
+const GLfloat AMBIENT_LIGHT[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+const GLfloat DIFFUSE_LIGHT[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 const GLfloat SPECULAR_LIGHT[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-const GLfloat LIGHT_POSITION[] = { -100.0f, 125.0f, 100.0f, 1.0f };
+const GLfloat LIGHT_POSITION[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 
-const GLfloat AMBIENT_SUB_LIGHT[] = { 0.3f, 0.3f, 0.3f, 1.0f };
+const GLfloat AMBIENT_SUB_LIGHT[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 const GLfloat DIFFUSE_SUB_LIGHT[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-const GLfloat SUB_LIGHT_POSITION[] = { 7.0f, 0.0f, -5.0f, 1.0f };
+const GLfloat SUB_LIGHT_POSITION[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 
-const GLfloat MATERIAL_AMBIENT[] = { 0.0f, 0.75f, 0.0f, 1.0f };
+const GLfloat MATERIAL_AMBIENT[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 const GLfloat MATERIAL_SPECULAR[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 /* End */
 
 static inline int circularIndex(int size, int index) {
-  return index < 0 ? size - 1 + index : (index >= size ? index - size : index);
+  if (index < -size) return (size + index % size) % size;
+  else if (index < 0) return size + index;
+  else if (index >= size) return (index - size) % size;
+  else return index;
 }
 
 static inline float bSplinePolynomial(float *U, float *G) {
