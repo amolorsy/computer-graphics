@@ -18,4 +18,7 @@ class Mesh {
 
     std::vector<glm::vec3> getVertices();
     std::vector<Face> getFaces();
+
+    void clearVertices();
+    void clearFaces();
 };

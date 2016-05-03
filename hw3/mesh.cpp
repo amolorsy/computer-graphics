@@ -21,3 +21,11 @@ std::vector<glm::vec3> Mesh::getVertices() {
 std::vector<Face> Mesh::getFaces() {
   return mFaces;
 }
+
+void Mesh::clearVertices() {
+  mVertices.clear();
+}
+
+void Mesh::clearFaces() {
+  mFaces.clear();
+}

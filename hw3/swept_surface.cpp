@@ -5,6 +5,8 @@ Camera *camera;
 Data *data;
 Mesh *mesh;
 
+vector<CrossSection> crossSections;
+
 int width, height;
 bool isLeftButtonPressed;
 
@@ -97,14 +99,15 @@ vector<float> interpolateScalars(vector<float> scalars) {
   return results;
 }
 
-void generatePolygonalMesh() {
-  vector<CrossSection> crossSections;
+void initializeCrossSections() {
   crossSections.push_back(data->getCrossSections().at(0));
   for (int i = 0; i < data->getCrossSections().size(); i++)
     crossSections.push_back(data->getCrossSections().at(i));
   crossSections.push_back(data->getCrossSections().at(data->getNumberOfCrossSections() - 1));
   data->modifyNumberOfCrossSections(data->getNumberOfCrossSections() + 2);
+}
 
+void constructClosedCurves() {
   for (int i = 0; i < crossSections.size(); i++) {
     CrossSection section = crossSections.at(i);
     if (data->getSplineType().compare("BSPLINE") == 0)
@@ -112,7 +115,9 @@ void generatePolygonalMesh() {
     else if (data->getSplineType().compare("CATMULL_ROM") == 0)
       crossSections.at(i).setSplinePoints(catmullRomSpline(section.getControlPoints()));
   }
+}
 
+void interpolateCrossSections() {
   vector< vector<glm::vec3> > lines;
   for (int n = 0; n < STEPS * data->getNumberOfControlPoints(); n++) {
     vector<glm::vec3> line;
@@ -154,17 +159,24 @@ void generatePolygonalMesh() {
       mesh->addVertex(point);
     } 
   }
+}
 
-  int x = STEPS * data->getNumberOfControlPoints();
-  int y = STEPS * (data->getNumberOfCrossSections() - 3);
+void generatePolygonalMesh() {
+  mesh->clearVertices();
+  mesh->clearFaces();
+
+  constructClosedCurves();
+  interpolateCrossSections();
   
-  for (int i = 0; i < x; i++) {
-    for (int j = 1; j < y; j++) {
+  int numberOfControlPoints = STEPS * data->getNumberOfControlPoints();
+  int numberOfCrossSections = STEPS * (data->getNumberOfCrossSections() - 3);
+  for (int i = 0; i < numberOfControlPoints; i++) {
+    for (int j = 1; j < numberOfCrossSections; j++) {
       int indices[4] = {
-        circularIndex(x, i - 1) * y + (j - 1),
-        circularIndex(x, i - 1) * y + j,
-        circularIndex(x, i) * y + (j - 1),
-        circularIndex(x, i) * y + j
+        circularIndex(numberOfControlPoints, i - 1) * numberOfCrossSections + (j - 1),
+        circularIndex(numberOfControlPoints, i - 1) * numberOfCrossSections + j,
+        circularIndex(numberOfControlPoints, i) * numberOfCrossSections + (j - 1),
+        circularIndex(numberOfControlPoints, i) * numberOfCrossSections + j
       };
       vector<int> i1, i2;
       i1.push_back(indices[0]);
@@ -256,6 +268,14 @@ void glutKeyboard(unsigned char key, int x, int y) {
     case 'e':
       camera->showAll(mesh->getVertices());
       break;
+    case 'z':
+      data->modifySplineType("BSPLINE");
+      generatePolygonalMesh();
+      break;
+    case 'x':
+      data->modifySplineType("CATMULL_ROM");
+      generatePolygonalMesh();
+      break;
     default:
       break;
   }
@@ -324,6 +344,8 @@ int main(int argc, char **argv) {
   data = new Data();
   data->parse(argv[1]);
   
+  initializeCrossSections();
+
   mesh = new Mesh();
   generatePolygonalMesh();
 

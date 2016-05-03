@@ -46,5 +46,6 @@ class Data {
     int getNumberOfControlPoints();
     vector<CrossSection> getCrossSections();
 
+    void modifySplineType(string splineType);
     void modifyNumberOfCrossSections(int numberOfCrossSections);
 };

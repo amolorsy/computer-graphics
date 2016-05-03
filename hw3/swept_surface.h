@@ -14,24 +14,7 @@
 #include "data.h"
 #include "trackball.h"
 
-const int B_SPLINE = 0;
-const int CATMULL_ROM_SPLINE = 1;
-
 const int STEPS = 5;
-
-/* For light and material */
-const GLfloat AMBIENT_LIGHT[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-const GLfloat DIFFUSE_LIGHT[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-const GLfloat SPECULAR_LIGHT[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-const GLfloat LIGHT_POSITION[] = { 0.0f, 0.0f, 0.0f, 1.0f };
-
-const GLfloat AMBIENT_SUB_LIGHT[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-const GLfloat DIFFUSE_SUB_LIGHT[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-const GLfloat SUB_LIGHT_POSITION[] = { 0.0f, 0.0f, 0.0f, 1.0f };
-
-const GLfloat MATERIAL_AMBIENT[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-const GLfloat MATERIAL_SPECULAR[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-/* End */
 
 static inline int circularIndex(int size, int index) {
   if (index < -size) return (size + index % size) % size;

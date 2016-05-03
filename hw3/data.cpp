@@ -81,6 +81,10 @@ vector<CrossSection> Data::getCrossSections() {
   return mCrossSections;
 }
 
+void Data::modifySplineType(string splineType) {
+  mSplineType = splineType;
+}
+
 void Data::modifyNumberOfCrossSections(int numberOfCrossSections) {
   mNumberOfCrossSections = numberOfCrossSections;
 }
