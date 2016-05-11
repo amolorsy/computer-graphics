@@ -1,3 +1,5 @@
+#include <iostream>
+#include <fstream>
 #include <vector>
 
 #include "glm-0.9.7.4/glm/glm.hpp"
@@ -21,4 +23,6 @@ class Mesh {
 
     void clearVertices();
     void clearFaces();
+
+    void generateStlFile();
 };

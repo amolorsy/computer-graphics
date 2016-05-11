@@ -268,6 +268,9 @@ void glutKeyboard(unsigned char key, int x, int y) {
     case 'e':
       camera->showAll(mesh->getVertices());
       break;
+    case 'd':
+      mesh->generateStlFile();
+      break;
     case 'z':
       data->modifySplineType("BSPLINE");
       generatePolygonalMesh();
