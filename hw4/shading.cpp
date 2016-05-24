@@ -70,16 +70,6 @@ void traverse(BspNode *node) {
   float d = glm::dot(n, camera->mEye - v1);
  
   if (d > 0.0f) {
-    if (node->frontChild != NULL) traverse(node->frontChild);
-    glNormal3f(n1.x, n1.y, n1.z);
-    glVertex3f(v1.x, v1.y, v1.z);
-    glNormal3f(n2.x, n2.y, n2.z);
-    glVertex3f(v2.x, v2.y, v2.z);
-    glNormal3f(n3.x, n3.y, n3.z);
-    glVertex3f(v3.x, v3.y, v3.z); 
-    if (node->backChild != NULL) traverse(node->backChild);
-  }
-  else {
     if (node->backChild != NULL) traverse(node->backChild);
     glNormal3f(n1.x, n1.y, n1.z);
     glVertex3f(v1.x, v1.y, v1.z);
@@ -88,6 +78,16 @@ void traverse(BspNode *node) {
     glNormal3f(n3.x, n3.y, n3.z);
     glVertex3f(v3.x, v3.y, v3.z);
     if (node->frontChild != NULL) traverse(node->frontChild);
+  }
+  else {
+    if (node->frontChild != NULL) traverse(node->frontChild);
+    glNormal3f(n1.x, n1.y, n1.z);
+    glVertex3f(v1.x, v1.y, v1.z);
+    glNormal3f(n2.x, n2.y, n2.z);
+    glVertex3f(v2.x, v2.y, v2.z);
+    glNormal3f(n3.x, n3.y, n3.z);
+    glVertex3f(v3.x, v3.y, v3.z); 
+    if (node->backChild != NULL) traverse(node->backChild);
   }
 }
 
@@ -280,6 +280,9 @@ int main(int argc, char **argv) {
   glLightfv(GL_LIGHT0, GL_DIFFUSE, DIFFUSE_LIGHT);
   glLightfv(GL_LIGHT0, GL_SPECULAR, SPECULAR_LIGHT);
   glLightfv(GL_LIGHT0, GL_POSITION, LIGHT_POSITION);
+  glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, SPOT_CUTOFF);
+  glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, SPOT_DIRECTION);
+  glLightf(GL_LIGHT0, GL_SPOT_EXPONENT, SPOT_EXPONENT);
                                     
   glEnable(GL_LIGHT1);
   glLightfv(GL_LIGHT1, GL_AMBIENT, AMBIENT_SUB_LIGHT);

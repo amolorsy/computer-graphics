@@ -13,12 +13,11 @@ class Material {
   public:
     const static int RED_RUBBER = 0;
     const static int RUBY = 1;
-    const static int JADE = 2;
-    const static int CHROME = 3;
-    const static int BRONZE = 4;
-    const static int COPPER = 5;
-    const static int CYAN_PLASTIC = 6;
-    const static int PEARL = 7;
+    const static int CHROME = 2;
+    const static int BRONZE = 3;
+    const static int COPPER = 4;
+    const static int CYAN_PLASTIC = 5;
+    const static int PEARL = 6;
 
     Material(GLfloat ambient[], GLfloat diffuse[], GLfloat specular[], GLfloat shininess);
     ~Material();

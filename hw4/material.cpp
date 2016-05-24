@@ -42,13 +42,6 @@ Material Material::load(int materialIndex) {
     GLfloat shininess = 0.6f * 128.0f;
     return Material(ambient, diffuse, specular, shininess);
   }
-  else if (materialIndex == JADE) {
-    GLfloat ambient[] = {0.135f, 0.2225f, 0.1575f, 1.0f};
-    GLfloat diffuse[] = {0.54f, 0.89f, 0.63f, 1.0f};
-    GLfloat specular[] = {0.316228f, 0.316228f, 0.316228f, 1.0f};
-    GLfloat shininess = 0.1f * 128.0f;
-    return Material(ambient, diffuse, specular, shininess);
-  }
   else if (materialIndex == CHROME) {
     GLfloat ambient[] = {0.25f, 0.25f, 0.25f, 1.0f};
     GLfloat diffuse[] = {0.4f, 0.4f, 0.4f, 1.0f};
