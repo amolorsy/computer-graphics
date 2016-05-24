@@ -10,6 +10,7 @@ Trackball::Trackball(int width, int height) {
 }
 
 Trackball::~Trackball() {
+  delete mCamera;
 }
 
 void Trackball::setCamera(Camera *camera) {

@@ -26,8 +26,18 @@ std::vector<glm::vec3> Mesh::getNormals() {
   return mNormals; 
 }
 
-std::vector<Face> Mesh::getFaces() {
+std::vector<Face> &Mesh::getFaces() {
   return mFaces;
+}
+
+void Mesh::scale(float factor) {
+  for (int i = 0; i < mVertices.size(); i++)
+    mVertices.at(i) *= factor;
+}
+
+void Mesh::translate(glm::vec3 factor) {
+  for (int i = 0; i < mVertices.size(); i++)
+    mVertices.at(i) += factor;
 }
 
 void Mesh::clearVertices() {
@@ -90,4 +100,41 @@ Mesh Mesh::fromObjFile(std::string filePath) {
   }
   
   return mesh;
+}
+
+Mesh Mesh::merge(std::vector<Mesh> meshes) {
+  Mesh merged;
+
+  for (int i = 0; i < meshes.size(); i++) {
+    Mesh mesh = meshes.at(i);
+    std::vector<glm::vec3> vertices = mesh.getVertices();
+    std::vector<glm::vec3> normals = mesh.getNormals();
+    std::vector<Face> faces = mesh.getFaces();
+
+    int vSize = merged.getVertices().size();
+    int nSize = merged.getNormals().size();
+
+    for (int j = 0; j < vertices.size(); j++)
+      merged.addVertex(vertices.at(j));
+    for (int j = 0; j < normals.size(); j++)
+      merged.addNormal(normals.at(j));
+    for (int j = 0; j < faces.size(); j++) {
+      Face face = faces.at(j);
+      std::vector<int> vertexIndices = face.getVertexIndices();
+      std::vector<int> normalIndices = face.getNormalIndices();
+      
+      vertexIndices.at(0) += vSize;
+      vertexIndices.at(1) += vSize;
+      vertexIndices.at(2) += vSize;
+      normalIndices.at(0) += nSize;
+      normalIndices.at(1) += nSize;
+      normalIndices.at(2) += nSize;
+      
+      face.setVertexIndices(vertexIndices);
+      face.setNormalIndices(normalIndices);
+      merged.addFace(face);
+    }
+  }
+
+  return merged;
 }

@@ -1,3 +1,6 @@
+#ifndef TRACKBALL_H
+#define TRACKBALL_H
+
 #include <cmath>
 #include <algorithm>
 
@@ -36,3 +39,5 @@ class Trackball {
     void start(int x, int y);
     void stop(int x, int y);
 };
+
+#endif

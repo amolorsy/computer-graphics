@@ -1,3 +1,6 @@
+#ifndef MESH_H
+#define MESH_H
+
 #include <stdlib.h>
 #include <algorithm>
 #include <iostream>
@@ -25,11 +28,17 @@ class Mesh {
 
     std::vector<glm::vec3> getVertices();
     std::vector<glm::vec3> getNormals();
-    std::vector<Face> getFaces();
+    std::vector<Face> &getFaces();
+
+    void scale(float factor);
+    void translate(glm::vec3 factor);
 
     void clearVertices();
     void clearNormals();
     void clearFaces();
 
     static Mesh fromObjFile(std::string filePath);
+    static Mesh merge(std::vector<Mesh> meshes);
 };
+
+#endif

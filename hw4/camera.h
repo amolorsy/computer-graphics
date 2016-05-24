@@ -1,3 +1,6 @@
+#ifndef CAMERA_H
+#define CAMERA_H
+
 #include <vector>
 #include <cmath>
 
@@ -45,3 +48,5 @@ class Camera {
     glm::mat4 calculateProjectionMatrix();
     glm::mat4 calculateViewMatrix();
 };
+
+#endif
