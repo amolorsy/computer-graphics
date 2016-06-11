@@ -1,7 +1,5 @@
 #include "camera.h"
 
-#include <iostream>
-
 Camera::Camera(int width, int height) {
   mFovY = 45.0f;
   mAspect = (float) width / (float) height;
